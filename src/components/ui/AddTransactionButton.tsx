@@ -1,4 +1,5 @@
 import React from 'react';
+import { Plus } from 'lucide-react';
 
 interface AddTransactionButtonProps {
   onClick: () => void;
@@ -7,16 +8,15 @@ interface AddTransactionButtonProps {
 
 const AddTransactionButton: React.FC<AddTransactionButtonProps> = ({ 
   onClick,
-  className = ''
+  className = 'btn-add'
 }) => {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md ${className}`}
-      style={{ fontSize: '0.9rem' }}
+      className={`${className}`}
     >
       <span>Adicionar transação</span>
-      <span className="text-lg font-bold">+</span>
+      <Plus />
     </button>
   );
 };

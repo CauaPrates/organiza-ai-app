@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatCurrency, formatDate } from '../../utils';
+import { SquarePen } from 'lucide-react';
 
 // Types defined locally
 type TransactionType = 'entrada' | 'gasto';
@@ -63,39 +64,45 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
   return (
     <div className={`table-modern ${className}`}>
       <div className="overflow-x-auto">
+        <hr className='hr'/>
         <table className="min-w-full">
+          
           <thead className="table-header">
+            
             <tr>
-              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Data
               </th>
-              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Descrição
               </th>
-              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Categoria
               </th>
-              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tipo
               </th>
-              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Qtd
               </th>
-              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Valor
               </th>
-              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Ações
               </th>
+              
             </tr>
+                    
           </thead>
-          <tbody className="bg-white">
-            {transactions.map((transaction) => (
-              <tr key={transaction.id} className="table-row">
-                <td className="table-cell whitespace-nowrap text-gray-900">
+                    
+          <tbody className="bg-white">            
+            {transactions.map((transaction) => (        
+              <tr key={transaction.id} className="table-row">                
+                <td className="table-cell whitespace-nowrap text-gray-900 text-left">
                   {formatDate(transaction.date)}
                 </td>
-                <td className="table-cell text-gray-900">
+                <td className="table-cell text-gray-900 text-left">
                   <div className="max-w-xs truncate" title={transaction.description}>
                     {transaction.description}
                   </div>
@@ -116,10 +123,10 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
                   {onEdit && (
                     <button
                       onClick={() => onEdit(transaction)}
-                      className="text-gray-400 hover:text-gray-600 transition-colors duration-200 text-sm"
+                      className="btn-edit"
                       title="Editar transação"
                     >
-                      ✏️
+                      <SquarePen/>
                     </button>
                   )}
                 </td>

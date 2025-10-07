@@ -35,8 +35,14 @@
 
 .card {
   padding: 2em;
+  margin-bottom: 2em;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+.valuesContainer {
+  margin-bottom: 2em;
+  width: 100%;
 }
