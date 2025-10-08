@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import loginImg from "../assets/login-gif2.gif"
 
 function Login(){
 
@@ -6,7 +7,13 @@ function Login(){
 
 
   return (
+    
     <div className="login-container">
+      <img
+      src={loginImg}
+      alt="Background Login"
+      className="login-background"
+      />
       <div className="min-h-screen animate-fade-in">
         <div className="container-responsive">
           <div className="upper-layer">
