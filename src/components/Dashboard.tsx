@@ -21,6 +21,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
+    <div className='dashboard-container'>
     <div className="min-h-screen animate-fade-in">
       <div className="container-responsive">
         {/* Header */}
@@ -76,6 +77,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
