@@ -151,12 +151,10 @@ body {
 
 .form-login{
   
-  margin-top: 50px;
-  width: 100%;
-  max-width: 100%;
-  padding-left: 5px;
-  box-sizing: border-box;
-  
+  display: flex;
+  flex-direction: column;
+  padding: 30px 0px 0px 0px;
+  box-sizing: border-box;  
 }
 
 .next-action-button{
@@ -179,12 +177,12 @@ body {
 }
 
 .label-login{
+  margin-top: 10px;
+  text-align: center;
   background-color: white;
   border-radius: 10px 10px 0px 0px;
-
-  padding:8px
-
-
+  width: 3rem;
+  padding:6px 6px 0px 6px;
 }
 
 textarea:focus, input:focus, select:focus {
@@ -193,16 +191,9 @@ textarea:focus, input:focus, select:focus {
 
 
 .input-login{
-  
-  width: 100%;
   padding: 10px;
-
-  margin-bottom: 20px;
-
   border: none;
-  border-radius: 6px;
-
-
+  border-radius: 0px 6px 6px 6px;
 }
 
 
@@ -426,9 +417,9 @@ textarea:focus, input:focus, select:focus {
 
 /* Responsividade */
 .container-responsive {
-  max-width: 1200px;
+  max-width: 1500px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 10rem 0;
 }
 
 @media (min-width: 768px) {
