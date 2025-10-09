@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocalStorage } from './useLocalStorage';
+import { useAuth } from '../contexts/AuthContext';
 
 // Types defined locally to avoid import issues
 interface User {
@@ -41,16 +42,23 @@ interface UseFinancesReturn {
 }
 
 export const useFinances = (): UseFinancesReturn => {
-  // Default user
-  const defaultUser: User = {
+  const { user: authUser } = useAuth();
+  
+  // Use authenticated user or fallback to default
+  const defaultUser: User = authUser ? {
+    id: authUser.id,
+    name: authUser.name,
+    email: authUser.email,
+    createdAt: new Date(),
+  } : {
     id: '1',
-    name: 'Ana',
-    email: 'ana@example.com',
+    name: 'Guest',
+    email: 'guest@example.com',
     createdAt: new Date(),
   };
 
-  // Mock transactions for demonstration
-  const defaultTransactions: Transaction[] = [
+  // Sample transactions for new users
+  const sampleTransactions: Transaction[] = [
     {
       id: '1',
       date: new Date('2025-09-30'),
@@ -59,7 +67,7 @@ export const useFinances = (): UseFinancesReturn => {
       type: 'gasto',
       quantity: 1,
       value: 70.00,
-      userId: '1',
+      userId: 'sample',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -71,7 +79,7 @@ export const useFinances = (): UseFinancesReturn => {
       type: 'entrada',
       quantity: 1,
       value: 1000.00,
-      userId: '1',
+      userId: 'sample',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -83,7 +91,7 @@ export const useFinances = (): UseFinancesReturn => {
       type: 'gasto',
       quantity: 1,
       value: 25.00,
-      userId: '1',
+      userId: 'sample',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -95,7 +103,7 @@ export const useFinances = (): UseFinancesReturn => {
       type: 'entrada',
       quantity: 1,
       value: 500.00,
-      userId: '1',
+      userId: 'sample',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -150,7 +158,15 @@ export const useFinances = (): UseFinancesReturn => {
   ];
 
   const [user, setUserState] = useLocalStorage<User>('finances_user', defaultUser);
-  const [transactions, setTransactions] = useLocalStorage<Transaction[]>('finances_transactions', defaultTransactions);
+  
+  // Get user-specific storage key
+  const transactionsKey = `finances_transactions_${user.id}`;
+  
+  // Initialize with sample data only for new users
+  const initialTransactions = localStorage.getItem(transactionsKey) ? [] : 
+    sampleTransactions.map(t => ({ ...t, userId: user.id }));
+    
+  const [transactions, setTransactions] = useLocalStorage<Transaction[]>(transactionsKey, initialTransactions);
 
   // Calculate financial summary
   const summary = useMemo((): FinancialSummary => {
