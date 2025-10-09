@@ -73,12 +73,12 @@ body {
   display: flex;
   position: relative;
   flex-direction: column;
-  height: 45vh;
+  height: auto;
   width: 40vw;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
-  background: rgba( 164, 163, 163, 50% );
+  padding: 5rem;
+  background: rgba(122, 122, 122, 0.425);
 
   backdrop-filter: blur( 7.5px );
     -webkit-backdrop-filter: blur( 7.5px );
@@ -119,6 +119,10 @@ body {
 
 .slider-bg.right {
   transform: translateX(100%);
+}
+
+.text-center{
+  color: white;
 }
 
 .slider-option {
