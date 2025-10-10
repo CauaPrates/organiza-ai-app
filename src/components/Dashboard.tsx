@@ -5,8 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import FinancialCard from './ui/FinancialCard';
 import TransactionTable from './ui/TransactionTable';
 import AddTransactionButton from './ui/AddTransactionButton';
-import AddTransactionModal from './ui/AddTransactionModal';
-import { LogOut } from 'lucide-react';
+import { LogOut, X, Plus } from 'lucide-react';
 
 // Types defined locally
 enum FinancialCardType {
@@ -20,7 +19,15 @@ const Dashboard: React.FC = () => {
   const { user, transactions, summary, addTransaction, updateTransaction, deleteTransaction } = useFinances();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const [transaction, setTransaction] = useState({
+    date: new Date(),
+    description: '',
+    category: '',
+    type: 'entrada' as 'entrada' | 'gasto',
+    quantity: 1,
+    value: 0
+  });
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -36,23 +43,39 @@ const Dashboard: React.FC = () => {
     navigate('/');
   };
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenOverlay = () => {
+    setIsOverlayOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseOverlay = () => {
+    setIsOverlayOpen(false);
+    // Reset form
+    setTransaction({
+      date: new Date(),
+      description: '',
+      category: '',
+      type: 'entrada' as 'entrada' | 'gasto',
+      quantity: 1,
+      value: 0
+    });
   };
 
-  const handleAddTransaction = (transaction: {
-    date: Date;
-    description: string;
-    category: string;
-    type: 'entrada' | 'gasto';
-    quantity: number;
-    value: number;
-  }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    if (name === 'date') {
+      setTransaction({ ...transaction, date: new Date(value) });
+    } else if (name === 'quantity' || name === 'value') {
+      setTransaction({ ...transaction, [name]: parseFloat(value) || 0 });
+    } else {
+      setTransaction({ ...transaction, [name]: value });
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     addTransaction(transaction);
+    handleCloseOverlay();
   };
 
   if (!authUser || isLoading) {
@@ -60,6 +83,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
+    
     <div className='dashboard-container'>
     <div className="min-h-screen animate-fade-in">
       <div className="container-responsive">
@@ -99,17 +123,156 @@ const Dashboard: React.FC = () => {
           />
         </div>
 
-        {/* Transactions Section */}
-        <div className="card p-0">
-          <div className="px-6 py-4 header-responsive">
-            <h2 className="text-[35px] font-semibold text-gray-900">Transações</h2>
-            <AddTransactionButton onClick={handleOpenModal} />
-            <AddTransactionModal 
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            onConfirm={handleAddTransaction}
-          />
-          
+          {/* Transactions Section */}
+          <div className="card p-0">
+            <div className="px-6 py-4 header-responsive">
+              <h2 className="text-[35px] font-semibold text-gray-900">Transações</h2>
+              <AddTransactionButton onClick={handleOpenOverlay} />
+            </div>
+
+            {isOverlayOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center">
+                
+                {/* Camada de fundo com blur e escurecimento */}
+                <div
+                  className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                  onClick={handleCloseOverlay} // fecha ao clicar fora do modal
+                />
+
+                {/* Modal principal */}
+                <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md z-10 animate-fade-in">
+                  
+                  <div className="flex justify-between items-center p-4 border-b">
+                    <div>
+                      <h2 className="text-xl font-semibold">Adicionar transação</h2>
+                      <p className="text-gray-500 text-sm mt-1">
+                        Adicione uma nova renda ou despesa para o seu quadro.
+                      </p>
+                    </div>
+                    <button 
+                      onClick={handleCloseOverlay}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="p-6">
+                    <div className="space-y-5">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Tipo
+                        </label>
+                        <select
+                          name="type"
+                          value={transaction.type}
+                          onChange={handleChange}
+                          className="w-full p-3 border rounded-md appearance-none bg-white"
+                          required
+                        >
+                          <option value="gasto">Gasto</option>
+                          <option value="entrada">Entrada</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Data
+                        </label>
+                        <input
+                          type="date"
+                          name="date"
+                          value={transaction.date.toISOString().split('T')[0]}
+                          onChange={handleChange}
+                          className="w-full p-3 border rounded-md"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Descrição
+                        </label>
+                        <input
+                          type="text"
+                          name="description"
+                          value={transaction.description}
+                          onChange={handleChange}
+                          className="w-full p-3 border rounded-md"
+                          placeholder="ex: Comida do cachorro"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Categoria
+                        </label>
+                        <select
+                          name="category"
+                          value={transaction.category}
+                          onChange={handleChange}
+                          className="w-full p-3 border rounded-md appearance-none bg-white"
+                          required
+                        >
+                          <option value="">Selecione uma categoria</option>
+                          <option value="Alimentação">Alimentação</option>
+                          <option value="Transporte">Transporte</option>
+                          <option value="Moradia">Moradia</option>
+                          <option value="Lazer">Lazer</option>
+                          <option value="Saúde">Saúde</option>
+                          <option value="Educação">Educação</option>
+                          <option value="Salário">Salário</option>
+                          <option value="Outros">Outros</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Valor
+                        </label>
+                        <input
+                          type="number"
+                          name="value"
+                          value={transaction.value}
+                          onChange={handleChange}
+                          className="w-full p-3 border rounded-md"
+                          placeholder="R$ 0,00"
+                          min="0"
+                          step="0.01"
+                          required
+                        />
+                      </div>
+
+                      <div className="hidden">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Quantidade
+                        </label>
+                        <input
+                          type="number"
+                          name="quantity"
+                          value={transaction.quantity}
+                          onChange={handleChange}
+                          className="w-full p-3 border rounded-md"
+                          min="1"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-6 flex justify-end">
+                      <button
+                        type="submit"
+                        className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors flex items-center"
+                      >
+                        <span>Adicionar transação</span>
+                        <Plus size={16} className="ml-2" />
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="table-responsive">
@@ -122,7 +285,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
-    </div>
+
   );
 };
 

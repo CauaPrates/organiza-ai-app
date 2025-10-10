@@ -48,6 +48,13 @@ body {
   background-color: #D9E4EC;
 }
 
+.modal-container{
+  display:flex;
+  width: 100%;
+  height: auto;
+  background-color: 000;
+}
+
 .login-background{
   position: absolute;
   width: 100%;
