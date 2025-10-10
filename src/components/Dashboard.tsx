@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import FinancialCard from './ui/FinancialCard';
 import TransactionTable from './ui/TransactionTable';
 import AddTransactionButton from './ui/AddTransactionButton';
+import AddTransactionModal from './ui/AddTransactionModal';
 import { LogOut } from 'lucide-react';
 
 // Types defined locally
@@ -19,6 +20,7 @@ const Dashboard: React.FC = () => {
   const { user, transactions, summary, addTransaction, updateTransaction, deleteTransaction } = useFinances();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -34,16 +36,23 @@ const Dashboard: React.FC = () => {
     navigate('/');
   };
 
-  const handleAddTransaction = () => {
-    const newTransaction = {
-      date: new Date(),
-      description: 'Nova transação',
-      category: 'Outros',
-      type: 'entrada' as const,
-      quantity: 1,
-      value: 0
-    };
-    addTransaction(newTransaction);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAddTransaction = (transaction: {
+    date: Date;
+    description: string;
+    category: string;
+    type: 'entrada' | 'gasto';
+    quantity: number;
+    value: number;
+  }) => {
+    addTransaction(transaction);
   };
 
   if (!authUser || isLoading) {
@@ -94,7 +103,13 @@ const Dashboard: React.FC = () => {
         <div className="card p-0">
           <div className="px-6 py-4 header-responsive">
             <h2 className="text-[35px] font-semibold text-gray-900">Transações</h2>
-            <AddTransactionButton onClick={handleAddTransaction} />
+            <AddTransactionButton onClick={handleOpenModal} />
+            <AddTransactionModal 
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onConfirm={handleAddTransaction}
+          />
+          
           </div>
           
           <div className="table-responsive">
