@@ -124,21 +124,14 @@ const Dashboard: React.FC = () => {
         </div>
 
           {/* Transactions Section */}
-          <div className="card p-0">
+          <div className="card">
             <div className="px-6 py-4 header-responsive">
               <h2 className="text-[35px] font-semibold text-gray-900">Transações</h2>
               <AddTransactionButton onClick={handleOpenOverlay} />
             </div>
 
             {isOverlayOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center">
-                
-                {/* Camada de fundo com blur e escurecimento */}
-                <div
-                  className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-                  onClick={handleCloseOverlay} // fecha ao clicar fora do modal
-                />
-
+              <div className="modal-container">
                 {/* Modal principal */}
                 <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md z-10 animate-fade-in">
                   
@@ -151,7 +144,7 @@ const Dashboard: React.FC = () => {
                     </div>
                     <button 
                       onClick={handleCloseOverlay}
-                      className="text-gray-500 hover:text-gray-700"
+                      className="btn-logout text-gray-500 hover:text-gray-700"
                     >
                       <X size={20} />
                     </button>
@@ -167,7 +160,7 @@ const Dashboard: React.FC = () => {
                           name="type"
                           value={transaction.type}
                           onChange={handleChange}
-                          className="w-full p-3 border rounded-md appearance-none bg-white"
+                          className="input-transaction w-full p-3 border rounded-md appearance-none bg-white"
                           required
                         >
                           <option value="gasto">Gasto</option>
@@ -184,7 +177,7 @@ const Dashboard: React.FC = () => {
                           name="date"
                           value={transaction.date.toISOString().split('T')[0]}
                           onChange={handleChange}
-                          className="w-full p-3 border rounded-md"
+                          className="input-transaction w-full p-3 border rounded-md"
                           required
                         />
                       </div>
@@ -198,7 +191,7 @@ const Dashboard: React.FC = () => {
                           name="description"
                           value={transaction.description}
                           onChange={handleChange}
-                          className="w-full p-3 border rounded-md"
+                          className="input-transaction w-full p-3 border rounded-md"
                           placeholder="ex: Comida do cachorro"
                           required
                         />
@@ -212,7 +205,7 @@ const Dashboard: React.FC = () => {
                           name="category"
                           value={transaction.category}
                           onChange={handleChange}
-                          className="w-full p-3 border rounded-md appearance-none bg-white"
+                          className="input-transaction w-full p-3 border rounded-md appearance-none bg-white"
                           required
                         >
                           <option value="">Selecione uma categoria</option>
@@ -236,7 +229,7 @@ const Dashboard: React.FC = () => {
                           name="value"
                           value={transaction.value}
                           onChange={handleChange}
-                          className="w-full p-3 border rounded-md"
+                          className="input-transaction w-full p-3 border rounded-md"
                           placeholder="R$ 0,00"
                           min="0"
                           step="0.01"
@@ -253,20 +246,20 @@ const Dashboard: React.FC = () => {
                           name="quantity"
                           value={transaction.quantity}
                           onChange={handleChange}
-                          className="w-full p-3 border rounded-md"
+                          className="input-login w-full p-3 border rounded-md"
                           min="1"
                           required
                         />
                       </div>
                     </div>
 
-                    <div className="mt-6 flex justify-end">
+                    <div className="mt-10 flex justify-end">
                       <button
                         type="submit"
-                        className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors flex items-center"
+                        className="btn-add bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors flex items-center"
                       >
-                        <span>Adicionar transação</span>
-                        <Plus size={16} className="ml-2" />
+                        <span>Continuar</span>
+                        <Plus size={25} className="ml-2" />
                       </button>
                     </div>
                   </form>
