@@ -118,13 +118,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
   };
 
   const formatCurrency = (value: string) => {
-    // Remove tudo que não é número
+
     const numbers = value.replace(/\D/g, '');
-    
-    // Converte para centavos
+
     const cents = parseInt(numbers) || 0;
-    
-    // Converte para reais
+
     const reais = cents / 100;
     
     return reais;

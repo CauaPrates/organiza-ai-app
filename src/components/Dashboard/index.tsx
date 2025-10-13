@@ -80,7 +80,7 @@ const Dashboard: React.FC = () => {
         category: transactionData.category,
         type: transactionData.type === 'income' ? 'entrada' as const : 'gasto' as const,
         quantity: 1, // Valor fixo já que removemos do formulário
-        value: transactionData.value
+        value: Number(transactionData.value)
       };
       
       await addTransaction(transaction);
@@ -120,7 +120,7 @@ const Dashboard: React.FC = () => {
           />
           <FinancialCard
             type={FinancialCardType.TOTAL}
-            value={summary.total}
+            value={summary.totalFinal}
             title="Total"
           />
         </div>

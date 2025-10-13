@@ -77,11 +77,11 @@ export const useFinances = (): UseFinancesReturn => {
   const summary = useMemo((): FinancialSummary => {
     const totalEntradas = transactions
       .filter(t => t.type === 'entrada')
-      .reduce((sum, t) => sum + t.value, 0);
+      .reduce((acc, t) => acc + (Number(t.value) || 0), 0);
     
     const totalSaidas = transactions
       .filter(t => t.type === 'gasto')
-      .reduce((sum, t) => sum + t.value, 0);
+      .reduce((acc, t) => acc + (Number(t.value) || 0), 0);
     
     const totalFinal = totalEntradas - totalSaidas;
 

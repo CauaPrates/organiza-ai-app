@@ -15,11 +15,9 @@ export const formatDate = (date: Date | string): string => {
 /**
  * Format currency to Brazilian Real
  */
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(amount);
+export const formatCurrency = (value: number) => {
+  if (isNaN(value)) return 'R$ 0,00';
+  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 };
 
 /**
