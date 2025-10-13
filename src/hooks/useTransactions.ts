@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+image.pngimport { useState, useMemo } from 'react';
 
 // Types defined locally
 type TransactionType = 'entrada' | 'gasto';

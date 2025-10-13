@@ -1,4 +1,5 @@
 import React from 'react';
+import './ui-components.css';
 
 // Types defined locally
 enum FinancialCardType {

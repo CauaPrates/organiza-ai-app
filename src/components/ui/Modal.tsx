@@ -1,12 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import './Modal.css';
 
-interface ModalProps {
-  children: React.ReactNode;
-  className?: string;
+interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
+  subtitle?: string;
   size?: 'small' | 'medium' | 'large' | 'full';
+  showCloseButton?: boolean;
+  className?: string;
+}
+
+interface ModalProps extends BaseModalProps {
+  children: React.ReactNode;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -15,8 +22,12 @@ const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   title,
+  subtitle,
   size = 'medium',
+  showCloseButton = true,
 }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -35,6 +46,14 @@ const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen, onClose]);
 
+  // Focar no modal quando abrir
+  useEffect(() => {
+    if (isOpen && modalRef.current) {
+      modalRef.current.focus();
+    }
+  }, [isOpen]);
+
+  console.log('Modal - isOpen:', isOpen);
   if (!isOpen) return null;
 
   const sizeClasses = {
@@ -44,45 +63,61 @@ const Modal: React.FC<ModalProps> = ({
     full: 'max-w-full mx-4',
   };
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Backdrop */}
+  const handleBackdropClick = (event: React.MouseEvent) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
+  const modalContent = (
+    <div 
+      className="modal-overlay"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={title ? 'modal-title' : undefined}
+      aria-describedby={subtitle ? 'modal-subtitle' : undefined}
+    >
       <div 
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-        onClick={onClose}
-      />
-      
-      {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div 
-          className={`relative bg-white rounded-lg shadow-xl w-full ${sizeClasses[size]} ${className}`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          {title && (
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
+        ref={modalRef}
+        className={`modal-container ${size} ${className}`}
+        onClick={(e) => e.stopPropagation()}
+        tabIndex={-1}
+      >
+        {/* Header */}
+        {(title || subtitle || showCloseButton) && (
+          <div className="modal-header">
+            {title && (
+              <h2 id="modal-title" className="modal-title">
                 {title}
-              </h3>
+              </h2>
+            )}
+            {subtitle && (
+              <p id="modal-subtitle" className="modal-subtitle">
+                {subtitle}
+              </p>
+            )}
+            {showCloseButton && (
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="modal-close-button"
+                aria-label="Fechar modal"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                ×
               </button>
-            </div>
-          )}
-          
-          {/* Content */}
-          <div className="p-6">
-            {children}
+            )}
           </div>
+        )}
+        
+        {/* Content */}
+        <div className="modal-content">
+          {children}
         </div>
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
-export default Modal;
+export { Modal };

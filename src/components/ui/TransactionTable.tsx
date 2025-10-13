@@ -1,6 +1,7 @@
 import React from 'react';
 import { formatCurrency, formatDate } from '../../utils';
 import { SquarePen } from 'lucide-react';
+import './ui-components.css';
 
 // Types defined locally
 type TransactionType = 'entrada' | 'gasto';

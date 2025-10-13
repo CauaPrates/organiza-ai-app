@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { AlertCircle } from "lucide-react";
+import "./Login.css";
 
 function Login() {
   const [active, setActive] = useState<"login" | "signup">("login");
@@ -73,9 +74,7 @@ function Login() {
         alt="Background Login"
         className="login-background"
       />
-      <div className="min-h-screen animate-fade-in">
-        <div className="container-responsive">
-          <div className="upper-layer">
+      <div className="upper-layer">
             <div className="inner-container">
               <h1 className="text-center">Bem vindo ao OrganizaAí</h1>
               <div className="slider-container">
@@ -182,8 +181,6 @@ function Login() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
     </div>
   );
 }
