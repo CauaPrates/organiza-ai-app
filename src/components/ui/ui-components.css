@@ -49,6 +49,21 @@
   background-color: var(--gray-100);
 }
 
+.btn-delete {
+  border: none;
+  background-color: #fff !important;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+  color: #64748b;
+}
+
+.btn-delete:hover {
+  background-color: #fee2e2 !important;
+  color: #ef4444;
+}
+
 .btn-add {
   display: flex;
   padding: 10px;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatCurrency, formatDate } from '../../utils';
-import { SquarePen } from 'lucide-react';
+import { SquarePen, Trash2 } from 'lucide-react';
 import './ui-components.css';
 
 // Types defined locally
@@ -22,12 +22,14 @@ interface Transaction {
 interface TransactionTableProps {
   transactions: Transaction[];
   onEdit?: (transaction: Transaction) => void;
+  onDelete?: (id: string) => void;
   className?: string;
 }
 
 const TransactionTable: React.FC<TransactionTableProps> = ({ 
   transactions, 
   onEdit,
+  onDelete,
   className = '' 
 }) => {
   const getTypeTag = (type: 'entrada' | 'gasto') => {
@@ -121,15 +123,30 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
                   {getValueDisplay(transaction.value, transaction.type)}
                 </td>
                 <td className="table-cell whitespace-nowrap text-gray-500">
-                  {onEdit && (
-                    <button
-                      onClick={() => onEdit(transaction)}
-                      className="btn-edit"
-                      title="Editar transação"
-                    >
-                      <SquarePen/>
-                    </button>
-                  )}
+                  <div className="flex items-center space-x-2 justify-end">
+                    {onEdit && (
+                      <button
+                        onClick={() => onEdit(transaction)}
+                        className="btn-edit"
+                        title="Editar transação"
+                      >
+                        <SquarePen/>
+                      </button>
+                    )}
+                    {onDelete && (
+                      <button
+                        onClick={() => {
+                          if (window.confirm('Tem certeza que deseja excluir esta transação?')) {
+                            onDelete(transaction.id);
+                          }
+                        }}
+                        className="btn-delete"
+                        title="Excluir transação"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
