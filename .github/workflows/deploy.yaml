@@ -1,0 +1,55 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - prod
+      
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # job de construir o projeto
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Construir a imagem Docker
+        run: docker build -t organiza-ai-app .
+
+      - name: Criar a pasta dist para os artefatos
+        run: mkdir ./dist
+
+      - name: Copiar arquivos da imagem Docker para a pasta dist
+        run: |
+          docker create --name temp_container organiza-ai-app
+          docker cp temp_container:/usr/share/nginx/html/. ./dist
+          docker rm temp_container
+
+      - name: Fazer upload do artefato para o GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+  # deploy c=8
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    # precisa que build termine sem erro
+    needs: build
+    steps:
+      - name: Deploy para o GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
