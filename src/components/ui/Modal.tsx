@@ -56,12 +56,11 @@ const Modal: React.FC<ModalProps> = ({
   console.log('Modal - isOpen:', isOpen);
   if (!isOpen) return null;
 
-  const sizeClasses = {
-    small: 'max-w-md',
-    medium: 'max-w-lg',
-    large: 'max-w-2xl',
-    full: 'max-w-full mx-4',
-  };
+  // Tamanhos disponíveis para o modal
+  // small: 'max-w-md',
+  // medium: 'max-w-lg',
+  // large: 'max-w-2xl',
+  // full: 'max-w-full'
 
   const handleBackdropClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {

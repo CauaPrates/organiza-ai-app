@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentWithClassName } from '../../types';
+import type { ComponentWithClassName } from '../../types';
 
 interface LoadingProps extends ComponentWithClassName {
   size?: 'small' | 'medium' | 'large';

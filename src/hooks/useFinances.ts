@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import { useAuth } from '../contexts/AuthContext';
 

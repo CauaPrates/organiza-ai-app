@@ -16,10 +16,7 @@ interface TransactionFormData {
   value: number;
 }
 
-interface ValidationError {
-  field: string;
-  message: string;
-}
+// Tipo de erro removido pois não é utilizado
 
 interface TransactionFormProps {
   onSubmit: (data: TransactionFormData) => void;
@@ -89,7 +86,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     }
 
     if (formData.value <= 0) {
-      newErrors.value = 'Valor deve ser maior que zero';
+      newErrors.value = 0; // Usando 0 como indicador de erro
     }
 
     if (!formData.date) {
