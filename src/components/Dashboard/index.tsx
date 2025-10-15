@@ -19,6 +19,19 @@ interface TransactionFormData {
   value: number;
 }
 
+interface Transaction {
+  id: string;
+  date: Date;
+  description: string;
+  category: string;
+  type: 'entrada' | 'gasto';
+  quantity: number;
+  value: number;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Types defined locally
 enum FinancialCardType {
   ENTRADAS = 'entradas',
@@ -76,7 +89,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleEditTransaction = (transaction: any) => {
+  const handleEditTransaction = (transaction: Transaction) => {
     // Adapter to convert from onEdit(transaction) to updateTransaction(id, updates)
     updateTransaction(transaction.id, transaction);
   };
