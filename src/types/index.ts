@@ -1,2 +1,6 @@
 // Re-export all types from modal.ts for easier imports
-export * from './modal';
+export type { BaseModalProps, TransactionFormData, TransactionType } from './modal';
+
+export interface ComponentWithClassName {
+  className?: string;
+}

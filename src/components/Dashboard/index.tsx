@@ -19,20 +19,6 @@ interface TransactionFormData {
   value: number;
 }
 
-interface LegacyTransaction {
-  date: Date;
-  description: string;
-  category: string;
-  type: 'entrada' | 'gasto';
-  quantity: number;
-  value: number;
-}
-
-// Função para converter tipos de transação
-const convertTransactionType = (type: 'income' | 'expense'): 'entrada' | 'gasto' => {
-  return type === 'income' ? 'entrada' : 'gasto';
-};
-
 // Types defined locally
 enum FinancialCardType {
   ENTRADAS = 'entradas',
@@ -90,6 +76,11 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleEditTransaction = (transaction: any) => {
+    // Adapter to convert from onEdit(transaction) to updateTransaction(id, updates)
+    updateTransaction(transaction.id, transaction);
+  };
+
   if (isLoading) {
     return <div>Carregando...</div>;
   }
@@ -111,17 +102,14 @@ const Dashboard: React.FC = () => {
           <FinancialCard
             type={FinancialCardType.ENTRADAS}
             value={summary.totalEntradas}
-            title="Entradas"
           />
           <FinancialCard
             type={FinancialCardType.SAIDAS}
             value={summary.totalSaidas}
-            title="Saídas"
           />
           <FinancialCard
             type={FinancialCardType.TOTAL}
             value={summary.totalFinal}
-            title="Total"
           />
         </div>
 
@@ -132,7 +120,7 @@ const Dashboard: React.FC = () => {
           </div>
           <TransactionTable
             transactions={transactions}
-            onUpdate={updateTransaction}
+            onEdit={handleEditTransaction}
             onDelete={deleteTransaction}
           />
         </div>
