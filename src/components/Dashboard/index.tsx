@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFinances } from '../../hooks';
 import { useAuth } from '../../contexts/AuthContext';
@@ -6,7 +6,6 @@ import FinancialCard from '../ui/FinancialCard';
 import TransactionTable from '../ui/TransactionTable';
 import AddTransactionButton from '../ui/AddTransactionButton';
 import { AddTransactionModal } from '../modals/AddTransactionModal';
-// Removendo import desnecessário
 import { LogOut } from 'lucide-react';
 import './Dashboard.css';
 
@@ -18,20 +17,6 @@ interface TransactionFormData {
   category: string;
   value: number;
 }
-
-interface LegacyTransaction {
-  date: Date;
-  description: string;
-  category: string;
-  type: 'entrada' | 'gasto';
-  quantity: number;
-  value: number;
-}
-
-// Função para converter tipos de transação
-const convertTransactionType = (type: 'income' | 'expense'): 'entrada' | 'gasto' => {
-  return type === 'income' ? 'entrada' : 'gasto';
-};
 
 // Types defined locally
 enum FinancialCardType {
@@ -111,17 +96,14 @@ const Dashboard: React.FC = () => {
           <FinancialCard
             type={FinancialCardType.ENTRADAS}
             value={summary.totalEntradas}
-            title="Entradas"
           />
           <FinancialCard
             type={FinancialCardType.SAIDAS}
             value={summary.totalSaidas}
-            title="Saídas"
           />
           <FinancialCard
             type={FinancialCardType.TOTAL}
             value={summary.totalFinal}
-            title="Total"
           />
         </div>
 
@@ -132,7 +114,7 @@ const Dashboard: React.FC = () => {
           </div>
           <TransactionTable
             transactions={transactions}
-            onUpdate={updateTransaction}
+            onEdit={updateTransaction}
             onDelete={deleteTransaction}
           />
         </div>

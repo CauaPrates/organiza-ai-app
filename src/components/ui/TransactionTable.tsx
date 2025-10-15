@@ -21,7 +21,7 @@ interface Transaction {
 
 interface TransactionTableProps {
   transactions: Transaction[];
-  onEdit?: (transaction: Transaction) => void;
+  onEdit?: (id: string, transaction: Partial<Transaction>) => void;
   onDelete?: (id: string) => void;
   className?: string;
 }
@@ -126,7 +126,7 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
                   <div className="flex items-center space-x-2 justify-end">
                     {onEdit && (
                       <button
-                        onClick={() => onEdit(transaction)}
+                        onClick={() => onEdit(transaction.id, transaction)}
                         className="btn-edit"
                         title="Editar transação"
                       >

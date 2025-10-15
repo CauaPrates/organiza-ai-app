@@ -7,12 +7,11 @@ export { default as Sidebar } from './layout/Sidebar';
 export { default as Button } from './ui/Button';
 export { default as Card } from './ui/Card';
 export { default as Input } from './ui/Input';
-export { default as Modal } from './ui/Modal';
+export { Modal } from './ui/Modal';
 export { default as Loading } from './ui/Loading';
 export { default as FinancialCard } from './ui/FinancialCard';
 export { default as TransactionTable } from './ui/TransactionTable';
 export { default as AddTransactionButton } from './ui/AddTransactionButton';
 
 export { default as Counter } from './features/Counter';
-export { default as UserProfile } from './features/UserProfile';
 export { default as Dashboard } from './Dashboard';
