@@ -1,4 +1,3 @@
-import React from 'react';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';

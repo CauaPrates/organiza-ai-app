@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 interface LoadingState {
   isLoading: boolean;
@@ -12,19 +12,16 @@ interface ApiResponse<T> {
 }
 
 interface UseApiOptions<T> {
+  immediate?: boolean;
   onSuccess?: (data: T) => void;
   onError?: (error: string) => void;
 }
 
-interface UseApiReturn<T> extends LoadingState {
-  data: T | null;
-  execute: () => Promise<void>;
-  reset: () => void;
-}
+// Interface removida pois não é utilizada
 
 export const useApi = <T>(
   apiFunction: () => Promise<ApiResponse<T>>,
-  options: UseApiOptions = {}
+  options: UseApiOptions<T> = {}
 ) => {
   const { immediate = false, onSuccess, onError } = options;
   

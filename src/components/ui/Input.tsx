@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentWithClassName } from '../../types';
+import type { ComponentWithClassName } from '../../types';
 
 interface InputProps extends ComponentWithClassName {
   type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
