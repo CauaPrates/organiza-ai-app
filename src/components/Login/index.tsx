@@ -70,7 +70,7 @@ function Login() {
   return (
     <div className="login-container">
       <img
-        src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGw2OTBqZXB5YzJlZDBranJxb2VneTltNHIycDNqaXF1N3E3em8yZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/r1IMdmkhUcpzy/giphy.gif"
+        src="https://giphy.com/gifs/art-animation-loop-26hirJIfLazHxrInC"
         alt="Background Login"
         className="login-background"
       />
