@@ -6,6 +6,7 @@ import FinancialCard from '../ui/FinancialCard';
 import TransactionTable from '../ui/TransactionTable';
 import AddTransactionButton from '../ui/AddTransactionButton';
 import { AddTransactionModal } from '../modals/AddTransactionModal';
+import { EditTransactionModal } from '../modals/EditTransactionModal';
 import { LogOut } from 'lucide-react';
 import './Dashboard.css';
 
@@ -31,6 +32,8 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -54,6 +57,16 @@ const Dashboard: React.FC = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+  
+  const handleEditTransaction = (id: string, transaction: any) => {
+    setSelectedTransaction(transaction);
+    setIsEditModalOpen(true);
+  };
+  
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedTransaction(null);
   };
 
   const handleAddTransaction = async (transactionData: TransactionFormData) => {
@@ -114,7 +127,7 @@ const Dashboard: React.FC = () => {
           </div>
           <TransactionTable
             transactions={transactions}
-            onEdit={updateTransaction}
+            onEdit={handleEditTransaction}
             onDelete={deleteTransaction}
           />
         </div>
@@ -125,6 +138,14 @@ const Dashboard: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onAddTransaction={handleAddTransaction}
+      />
+
+      {/* Modal para editar transação */}
+      <EditTransactionModal
+        isOpen={isEditModalOpen}
+        onClose={handleCloseEditModal}
+        onUpdateTransaction={updateTransaction}
+        transaction={selectedTransaction}
       />
     </div>
   );
