@@ -11,9 +11,7 @@ export const transactionService = {
         .eq('user_id', userId)
         .order('date', { ascending: false });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       return data.map((item: any) => ({
         id: item.id,
@@ -22,7 +20,7 @@ export const transactionService = {
         category: item.category,
         type: item.type as TransactionType,
         quantity: item.quantity,
-        value: item.quantity, // Usando quantity como valor conforme estrutura do banco
+        value: item.quantity,
         userId: item.user_id,
         createdAt: new Date(item.created_at),
         updatedAt: new Date(item.updated_at)
@@ -34,10 +32,19 @@ export const transactionService = {
   },
 
   // Adicionar uma nova transação
-  async addTransaction(transaction: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>, userId: string): Promise<Transaction | null> {
+  async addTransaction(
+    transaction: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>,
+    userId: string
+  ): Promise<Transaction | null> {
     try {
       const now = new Date().toISOString();
-      
+
+      // Garantir que o valor seja um número válido
+      const numericValue = Number(transaction.value);
+      if (isNaN(numericValue)) {
+        throw new Error('Valor da transação inválido');
+      }
+
       const { data, error } = await supabase
         .from('transactions')
         .insert([
@@ -46,7 +53,8 @@ export const transactionService = {
             description: transaction.description,
             category: transaction.category,
             type: transaction.type,
-            quantity: transaction.value, // Usando value como quantity conforme estrutura do banco
+            quantity: numericValue,
+            value: numericValue,
             user_id: userId,
             created_at: now,
             updated_at: now
@@ -55,9 +63,7 @@ export const transactionService = {
         .select()
         .single();
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       return {
         id: data.id,
@@ -66,7 +72,7 @@ export const transactionService = {
         category: data.category,
         type: data.type as TransactionType,
         quantity: data.quantity,
-        value: data.quantity, // Usando quantity como valor
+        value: data.quantity,
         userId: data.user_id,
         createdAt: new Date(data.created_at),
         updatedAt: new Date(data.updated_at)
@@ -81,13 +87,19 @@ export const transactionService = {
   async updateTransaction(id: string, transaction: Partial<Transaction>): Promise<Transaction | null> {
     try {
       const updateData: any = {};
-      
+
       if (transaction.date) updateData.date = transaction.date.toISOString();
       if (transaction.description) updateData.description = transaction.description;
       if (transaction.category) updateData.category = transaction.category;
       if (transaction.type) updateData.type = transaction.type;
-      if (transaction.value !== undefined) updateData.quantity = transaction.value;
-      
+      if (transaction.value !== undefined) {
+        const numericValue = Number(transaction.value);
+        if (isNaN(numericValue)) {
+          throw new Error('Valor da transação inválido');
+        }
+        updateData.quantity = numericValue;
+      }
+
       updateData.updated_at = new Date().toISOString();
 
       const { data, error } = await supabase
@@ -97,9 +109,7 @@ export const transactionService = {
         .select()
         .single();
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       return {
         id: data.id,
@@ -108,7 +118,7 @@ export const transactionService = {
         category: data.category,
         type: data.type as TransactionType,
         quantity: data.quantity,
-        value: data.quantity, // Usando quantity como valor
+        value: data.quantity,
         userId: data.user_id,
         createdAt: new Date(data.created_at),
         updatedAt: new Date(data.updated_at)
@@ -127,9 +137,7 @@ export const transactionService = {
         .delete()
         .eq('id', id);
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       return true;
     } catch (error) {
