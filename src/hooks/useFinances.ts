@@ -1,77 +1,48 @@
-import { useMemo } from 'react';
-import { useLocalStorage } from './useLocalStorage';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
-// Types defined locally to avoid import issues
-interface User {
-  id: string;
-  name: string;
-  email?: string;
-  createdAt: Date;
-}
-
-type TransactionType = 'entrada' | 'gasto';
-
-interface Transaction {
-  id: string;
-  date: Date;
-  description: string;
-  category: string;
-  type: TransactionType;
-  quantity: number;
-  value: number;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface FinancialSummary {
-  totalEntradas: number;
-  totalSaidas: number;
-  totalFinal: number;
-}
+import { Transaction, TransactionType, FinancialSummary } from '../types';
+import { transactionService } from '../services/transactionService';
 
 interface UseFinancesReturn {
-  user: User;
   transactions: Transaction[];
   summary: FinancialSummary;
-  addTransaction: (transaction: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => void;
-  updateTransaction: (id: string, transaction: Partial<Transaction>) => void;
-  deleteTransaction: (id: string) => void;
-  setUser: (user: User) => void;
+  addTransaction: (transaction: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  updateTransaction: (id: string, transaction: Partial<Transaction>) => Promise<void>;
+  deleteTransaction: (id: string) => Promise<void>;
+  loading: boolean;
+  error: string | null;
 }
 
 export const useFinances = (): UseFinancesReturn => {
-  const { user: authUser } = useAuth();
-  
-  // Use authenticated user or fallback to default
-  const defaultUser: User = authUser ? {
-    id: authUser.id,
-    name: authUser.name,
-    email: authUser.email,
-    createdAt: new Date(),
-  } : {
-    id: '1',
-    name: 'Guest',
-    email: 'guest@example.com',
-    createdAt: new Date(),
-  };
+  const { user } = useAuth();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Sample transactions for new users
-  const sampleTransactions: Transaction[] = [
+  // Carregar transações do usuário
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      if (!user) {
+        setTransactions([]);
+        setLoading(false);
+        return;
+      }
 
-  ];
+      try {
+        setLoading(true);
+        const data = await transactionService.getTransactions(user.id);
+        setTransactions(data);
+        setError(null);
+      } catch (err) {
+        console.error('Erro ao buscar transações:', err);
+        setError('Falha ao carregar transações');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const [user, setUserState] = useLocalStorage<User>('finances_user', defaultUser);
-  
-  // Get user-specific storage key
-  const transactionsKey = `finances_transactions_${user.id}`;
-  
-  // Initialize with sample data only for new users
-  const initialTransactions = localStorage.getItem(transactionsKey) ? [] : 
-    sampleTransactions.map(t => ({ ...t, userId: user.id }));
-    
-  const [transactions, setTransactions] = useLocalStorage<Transaction[]>(transactionsKey, initialTransactions);
+    fetchTransactions();
+  }, [user]);
 
   // Calculate financial summary
   const summary = useMemo((): FinancialSummary => {
@@ -92,43 +63,68 @@ export const useFinances = (): UseFinancesReturn => {
     };
   }, [transactions]);
 
-  const addTransaction = (transactionData: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => {
-    const newTransaction: Transaction = {
-      ...transactionData,
-      id: Date.now().toString(),
-      userId: user.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    setTransactions(prev => [newTransaction, ...prev]);
+  // Adicionar transação
+  const addTransaction = async (transactionData: Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => {
+    if (!user) return;
+    
+    try {
+      setLoading(true);
+      const newTransaction = await transactionService.addTransaction(transactionData, user.id);
+      
+      if (newTransaction) {
+        setTransactions(prev => [newTransaction, ...prev]);
+      }
+    } catch (err) {
+      console.error('Erro ao adicionar transação:', err);
+      setError('Falha ao adicionar transação');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateTransaction = (id: string, updates: Partial<Transaction>) => {
-    setTransactions(prev => 
-      prev.map(transaction => 
-        transaction.id === id 
-          ? { ...transaction, ...updates, updatedAt: new Date() }
-          : transaction
-      )
-    );
+  // Atualizar transação
+  const updateTransaction = async (id: string, transactionData: Partial<Transaction>) => {
+    try {
+      setLoading(true);
+      const updatedTransaction = await transactionService.updateTransaction(id, transactionData);
+      
+      if (updatedTransaction) {
+        setTransactions(prev => 
+          prev.map(t => t.id === id ? updatedTransaction : t)
+        );
+      }
+    } catch (err) {
+      console.error('Erro ao atualizar transação:', err);
+      setError('Falha ao atualizar transação');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const deleteTransaction = (id: string) => {
-    setTransactions(prev => prev.filter(transaction => transaction.id !== id));
-  };
-
-  const setUser = (newUser: User) => {
-    setUserState(newUser);
+  // Excluir transação
+  const deleteTransaction = async (id: string) => {
+    try {
+      setLoading(true);
+      const success = await transactionService.deleteTransaction(id);
+      
+      if (success) {
+        setTransactions(prev => prev.filter(t => t.id !== id));
+      }
+    } catch (err) {
+      console.error('Erro ao excluir transação:', err);
+      setError('Falha ao excluir transação');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {
-    user,
     transactions,
     summary,
     addTransaction,
     updateTransaction,
     deleteTransaction,
-    setUser,
+    loading,
+    error
   };
 };

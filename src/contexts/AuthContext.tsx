@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import type { User, LoginCredentials, RegisterData } from '../services/authService';
-import { authService } from '../services/authService';
+import { User, AuthCredentials as LoginCredentials, RegisterData, AuthResponse } from '../types';
+import { userService } from '../services/userService';
 
 interface AuthContextType {
   user: User | null;
@@ -33,11 +33,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Check if user is already logged in
   useEffect(() => {
-    const currentUser = authService.getCurrentUser();
-    if (currentUser) {
-      setUser(currentUser);
-    }
-    setLoading(false);
+    const checkUser = async () => {
+      try {
+        const currentUser = await userService.getCurrentUser();
+        if (currentUser) {
+          setUser(currentUser);
+        }
+      } catch (err) {
+        console.error('Erro ao verificar usuário:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkUser();
   }, []);
 
   // Login function
@@ -45,11 +54,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const loggedInUser = await authService.login(credentials);
-      if (loggedInUser) {
-        setUser(loggedInUser);
-        return loggedInUser;
-      } else {
+      const response = await userService.login(credentials);
+      if (response.error) {
+        setError(response.error.message);
+        return null;
+      }
+      
+      if (response.user) {
+        setUser(response.user);
+         return response.user;
+       } else {
         setError('Invalid email or password');
         return null;
       }
@@ -66,16 +80,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const newUser = await authService.register(data);
-      if (newUser) {
-        setUser(newUser);
-        return newUser;
+      const response = await userService.register(data);
+      if (response.error) {
+        setError(response.error.message);
+        return null;
+      }
+      
+      if (response.user) {
+        setUser(response.user);
+        return response.user;
       } else {
-        setError('Email already exists');
+        setError('Falha no registro');
         return null;
       }
     } catch (err) {
-      setError('An error occurred during registration');
+      const errorMessage = err instanceof Error ? err.message : 'Falha no registro';
+      setError(errorMessage);
       return null;
     } finally {
       setLoading(false);
@@ -83,9 +103,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // Logout function
-  const logout = () => {
-    authService.logout();
-    setUser(null);
+  const logout = async () => {
+    try {
+      const { error } = await userService.logout();
+      if (error) {
+        console.error('Erro ao fazer logout:', error);
+      }
+    } catch (err) {
+      console.error('Erro ao fazer logout:', err);
+    } finally {
+      setUser(null);
+    }
   };
 
   const value = {

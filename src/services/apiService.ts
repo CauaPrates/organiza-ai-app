@@ -1,5 +1,6 @@
 // API Service for handling HTTP requests
 import { API_CONFIG } from '../constants';
+import { supabase } from './supabaseClient';
 
 interface ApiResponse<T> {
   data: T;
@@ -31,12 +32,12 @@ class ApiService {
     };
 
     // Add auth token if available
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      };
+const { data } = await supabase.auth.getSession();
+if (data.session?.access_token) {
+  config.headers = {
+    ...config.headers,
+    Authorization: `Bearer ${data.session.access_token}`,
+  };
     }
 
     try {
