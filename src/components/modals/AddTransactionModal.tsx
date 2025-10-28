@@ -35,7 +35,6 @@ export const AddTransactionModal: React.FC<AddTransactionModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Erro ao adicionar transação:', error);
-      // Aqui você pode adicionar tratamento de erro (toast, etc.)
     } finally {
       setIsLoading(false);
     }
