@@ -28,7 +28,7 @@ enum FinancialCardType {
 
 const Dashboard: React.FC = () => {
   const { user: authUser, logout, isAuthenticated } = useAuth();
-  const { user, transactions, summary, addTransaction, updateTransaction, deleteTransaction } = useFinances();
+  const { transactions, summary, addTransaction, updateTransaction, deleteTransaction } = useFinances();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,6 +60,8 @@ const Dashboard: React.FC = () => {
   };
   
   const handleEditTransaction = (id: string, transaction: any) => {
+    // marcar 'id' como usado para evitar erro TS6133
+    void id;
     setSelectedTransaction(transaction);
     setIsEditModalOpen(true);
   };
@@ -97,7 +99,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1>Bem-vindo, {authUser?.name || user?.name || 'Usuário'}!</h1>
+        <h1>Bem-vindo, {authUser?.name || 'Usuário'}!</h1>
         <button onClick={handleLogout} className="logout-button">
           <LogOut size={20} />
           Sair

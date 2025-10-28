@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Transaction, TransactionType, FinancialSummary } from '../types';
+import { Transaction, FinancialSummary } from '../types';
 import { transactionService } from '../services/transactionService';
 
 interface UseFinancesReturn {
