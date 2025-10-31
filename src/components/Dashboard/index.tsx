@@ -9,6 +9,7 @@ import { AddTransactionModal } from '../modals/AddTransactionModal';
 import { EditTransactionModal } from '../modals/EditTransactionModal';
 import { BackgroundModal } from '../modals/BackgroundModal';
 import { LogOut, Image } from 'lucide-react';
+import { userService } from '../../services/userService';
 import './Dashboard.css';
 
 
@@ -38,6 +39,7 @@ const Dashboard: React.FC = () => {
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
   const [isBackgroundModalOpen, setIsBackgroundModalOpen] = useState(false);
   const [background, setBackground] = useState<{type: 'image' | 'color' | null; value: string | null}>(() => {
+    // Inicialmente, usar localStorage como valor temporário até carregar do Supabase
     const savedImage = localStorage.getItem('dashboardBackgroundImage');
     const savedColor = localStorage.getItem('dashboardBackgroundColor');
     
@@ -54,6 +56,42 @@ const Dashboard: React.FC = () => {
       setIsLoading(false);
     }
   }, [isAuthenticated, navigate]);
+  
+  // Carregar o fundo do dashboard do Supabase
+  useEffect(() => {
+    const fetchBackgroundFromSupabase = async () => {
+      try {
+        const { data, error } = await userService.getUserBackground();
+        
+        if (error) {
+          console.error('Erro ao buscar fundo do dashboard:', error);
+          return;
+        }
+        
+        if (data) {
+          setBackground({ 
+            type: data.type, 
+            value: data.value 
+          });
+          
+          // Atualizar também no localStorage para uso como cache
+          if (data.type === 'image') {
+            localStorage.setItem('dashboardBackgroundImage', data.value);
+            localStorage.removeItem('dashboardBackgroundColor');
+          } else {
+            localStorage.setItem('dashboardBackgroundColor', data.value);
+            localStorage.removeItem('dashboardBackgroundImage');
+          }
+        }
+      } catch (err) {
+        console.error('Erro ao buscar fundo do dashboard:', err);
+      }
+    };
+    
+    if (isAuthenticated) {
+      fetchBackgroundFromSupabase();
+    }
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     logout();
@@ -109,18 +147,32 @@ const Dashboard: React.FC = () => {
     setIsBackgroundModalOpen(false);
   };
   
-  const handleBackgroundChange = (type: 'image' | 'color', value: string) => {
+  const handleBackgroundChange = async (type: 'image' | 'color', value: string) => {
+    // Atualizar estado imediatamente para feedback visual instantâneo
     setBackground({ type, value });
     
-    // Limpar valores antigos
+    // Atualizar localStorage como cache para carregamento rápido
     localStorage.removeItem('dashboardBackgroundImage');
     localStorage.removeItem('dashboardBackgroundColor');
     
-    // Salvar novo valor
     if (type === 'image') {
       localStorage.setItem('dashboardBackgroundImage', value);
     } else if (type === 'color') {
       localStorage.setItem('dashboardBackgroundColor', value);
+    }
+    
+    // Persistir no Supabase
+    try {
+      const { error } = await userService.updateUserBackground({
+        type,
+        value
+      });
+      
+      if (error) {
+        console.error('Erro ao salvar fundo no Supabase:', error);
+      }
+    } catch (err) {
+      console.error('Erro ao atualizar fundo do dashboard:', err);
     }
   };
   
