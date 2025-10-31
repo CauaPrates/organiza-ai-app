@@ -6,16 +6,14 @@ import { AlertCircle } from "lucide-react";
 import "./Login.css";
 
 function Login() {
-  const [active, setActive] = useState<"login" | "signup">("login");
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
-  const { login, register } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,36 +27,15 @@ function Login() {
     setErrorMessage(null);
 
     try {
-      if (active === "login") {
-        const user = await login({
-          email: formData.email,
-          password: formData.password
-        });
-        
-        if (user) {
-          navigate("/dashboard");
-        } else {
-          setErrorMessage("Email ou senha inválidos");
-        }
+      const user = await login({
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (user) {
+        navigate("/dashboard");
       } else {
-        // Registration
-        if (!formData.name || !formData.email || !formData.password) {
-          setErrorMessage("Todos os campos são obrigatórios");
-          setIsSubmitting(false);
-          return;
-        }
-
-        const user = await register({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password
-        });
-
-        if (user) {
-          navigate("/dashboard");
-        } else {
-          setErrorMessage("Este email já está em uso");
-        }
+        setErrorMessage("Email ou senha inválidos");
       }
     } catch (error) {
       setErrorMessage("Ocorreu um erro. Tente novamente.");
@@ -77,24 +54,8 @@ function Login() {
       <div className="upper-layer">
             <div className="inner-container">
               <h1 className="text-center">Bem vindo ao OrganizaAí</h1>
-              <div className="slider-container">
-                <div
-                  className={`slider-bg ${active === "signup" ? "right" : "left"}`}
-                ></div>
-
-                <p
-                  className={`slider-option ${active === "login" ? "active" : ""}`}
-                  onClick={() => setActive("login")}
-                >
-                  Entrar
-                </p>
-
-                <p
-                  className={`slider-option ${active === "signup" ? "active" : ""}`}
-                  onClick={() => setActive("signup")}
-                >
-                  Cadastrar
-                </p>
+              <div className="login-header">
+                <h2>Entrar</h2>
               </div>
               
               {errorMessage && (
@@ -105,8 +66,7 @@ function Login() {
               )}
               
               <div className="form-container">
-                {active === "login" ? (
-                  <form className="form-login" onSubmit={handleSubmit}>
+                <form className="form-login" onSubmit={handleSubmit}>
                     <label className="label-login">E-mail</label>
                     <input
                       className="input-login"
@@ -136,49 +96,7 @@ function Login() {
                       {isSubmitting ? "Entrando..." : "Entrar"}
                     </button>
                   </form>
-                ) : (
-                  <form className="form-login" onSubmit={handleSubmit}>
-                    <label className="label-login">Nome</label>
-                    <input
-                      className="input-login"
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Seu nome"
-                      required
-                    />
-                    <label className="label-login">E-mail</label>
-                    <input
-                      className="input-login"
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="seuemail@gmail.com"
-                      required
-                    />
-                    <label className="label-login">Senha</label>
-                    <input
-                      className="input-login"
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="Senha"
-                      required
-                    />
-
-                    <button 
-                      className="next-action-button" 
-                      type="submit"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? "Cadastrando..." : "Cadastrar"}
-                    </button>
-                  </form>
-                )}
-              </div>
+                </div>
             </div>
           </div>
     </div>

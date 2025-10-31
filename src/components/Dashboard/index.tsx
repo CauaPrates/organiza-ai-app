@@ -7,8 +7,10 @@ import TransactionTable from '../ui/TransactionTable';
 import AddTransactionButton from '../ui/AddTransactionButton';
 import { AddTransactionModal } from '../modals/AddTransactionModal';
 import { EditTransactionModal } from '../modals/EditTransactionModal';
-import { LogOut } from 'lucide-react';
+import { BackgroundModal } from '../modals/BackgroundModal';
+import { LogOut, Image } from 'lucide-react';
 import './Dashboard.css';
+
 
 // Tipos locais para compatibilidade
 interface TransactionFormData {
@@ -34,6 +36,15 @@ const Dashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [isBackgroundModalOpen, setIsBackgroundModalOpen] = useState(false);
+  const [background, setBackground] = useState<{type: 'image' | 'color' | null; value: string | null}>(() => {
+    const savedImage = localStorage.getItem('dashboardBackgroundImage');
+    const savedColor = localStorage.getItem('dashboardBackgroundColor');
+    
+    if (savedImage) return { type: 'image', value: savedImage };
+    if (savedColor) return { type: 'color', value: savedColor };
+    return { type: 'color', value: '#D9E4EC' };
+  });
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -89,6 +100,43 @@ const Dashboard: React.FC = () => {
       throw error; // Re-throw para que o modal possa tratar o erro
     }
   };
+  
+  const handleOpenBackgroundModal = () => {
+    setIsBackgroundModalOpen(true);
+  };
+
+  const handleCloseBackgroundModal = () => {
+    setIsBackgroundModalOpen(false);
+  };
+  
+  const handleBackgroundChange = (type: 'image' | 'color', value: string) => {
+    setBackground({ type, value });
+    
+    // Limpar valores antigos
+    localStorage.removeItem('dashboardBackgroundImage');
+    localStorage.removeItem('dashboardBackgroundColor');
+    
+    // Salvar novo valor
+    if (type === 'image') {
+      localStorage.setItem('dashboardBackgroundImage', value);
+    } else if (type === 'color') {
+      localStorage.setItem('dashboardBackgroundColor', value);
+    }
+  };
+  
+  // Manter estas funções para compatibilidade com código existente
+  const handleBackgroundImageSelect = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageDataUrl = e.target?.result as string;
+      handleBackgroundChange('image', imageDataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  const handleBackgroundImageRemove = () => {
+    handleBackgroundChange('color', '#D9E4EC');
+  };
 
   if (isLoading) {
     return <div>Carregando...</div>;
@@ -97,7 +145,14 @@ const Dashboard: React.FC = () => {
   console.log('Dashboard renderizando - isModalOpen:', isModalOpen);
 
   return (
-    <div className="dashboard-container">
+    <div 
+      className="dashboard-container"
+      style={
+        background.type === 'image' 
+          ? { backgroundImage: `url(${background.value})` } 
+          : { backgroundColor: background.value || '#D9E4EC' }
+      }
+    >
       <div className="dashboard-header">
         <h1>Bem-vindo, {authUser?.name || 'Usuário'}!</h1>
         <button onClick={handleLogout} className="logout-button">
@@ -146,8 +201,22 @@ const Dashboard: React.FC = () => {
       <EditTransactionModal
         isOpen={isEditModalOpen}
         onClose={handleCloseEditModal}
-        onUpdateTransaction={updateTransaction}
         transaction={selectedTransaction}
+        onUpdateTransaction={updateTransaction}
+      />
+
+      {/* Botão para alterar fundo */}
+      <button className="background-change-button" onClick={handleOpenBackgroundModal}>
+        <Image size={18} />
+        <span>Alterar fundo</span>
+      </button>
+
+      {/* Modal para alterar fundo */}
+      <BackgroundModal
+        isOpen={isBackgroundModalOpen}
+        onClose={handleCloseBackgroundModal}
+        onBackgroundChange={handleBackgroundChange}
+        currentBackground={background}
       />
     </div>
   );

@@ -20,7 +20,7 @@ export const transactionService = {
         category: item.category,
         type: item.type as TransactionType,
         quantity: item.quantity,
-        value: item.quantity,
+        value: item.value,
         userId: item.user_id,
         createdAt: new Date(item.created_at),
         updatedAt: new Date(item.updated_at)
@@ -72,7 +72,7 @@ export const transactionService = {
         category: data.category,
         type: data.type as TransactionType,
         quantity: data.quantity,
-        value: data.quantity,
+        value: data.value,
         userId: data.user_id,
         createdAt: new Date(data.created_at),
         updatedAt: new Date(data.updated_at)
@@ -98,6 +98,7 @@ export const transactionService = {
           throw new Error('Valor da transação inválido');
         }
         updateData.quantity = numericValue;
+        updateData.value = numericValue;
       }
 
       updateData.updated_at = new Date().toISOString();
@@ -118,7 +119,7 @@ export const transactionService = {
         category: data.category,
         type: data.type as TransactionType,
         quantity: data.quantity,
-        value: data.quantity,
+        value: data.value,
         userId: data.user_id,
         createdAt: new Date(data.created_at),
         updatedAt: new Date(data.updated_at)

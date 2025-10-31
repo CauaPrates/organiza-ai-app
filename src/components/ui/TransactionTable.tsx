@@ -71,12 +71,11 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
         <table className="min-w-full">
           
           <thead className="table-header">
-            
             <tr>
-              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Data
               </th>
-              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Descrição
               </th>
               <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -85,20 +84,15 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
               <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tipo
               </th>
-              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Qtd
-              </th>
-              <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="table-cell text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Valor
               </th>
               <th className="table-cell text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Ações
               </th>
-              
             </tr>
-                    
           </thead>
-                    
+          
           <tbody className="bg-white">            
             {transactions.map((transaction) => (        
               <tr key={transaction.id} className="table-row">                
@@ -110,20 +104,17 @@ const TransactionTable: React.FC<TransactionTableProps> = ({
                     {transaction.description}
                   </div>
                 </td>
-                <td className="table-cell whitespace-nowrap text-gray-500">
+                <td className="table-cell whitespace-nowrap text-gray-500 text-center">
                   {transaction.category}
                 </td>
-                <td className="table-cell whitespace-nowrap">
+                <td className="table-cell whitespace-nowrap text-center">
                   {getTypeTag(transaction.type)}
                 </td>
-                <td className="table-cell whitespace-nowrap text-gray-900">
-                  {transaction.quantity}
-                </td>
-                <td className="table-cell whitespace-nowrap">
+                <td className="table-cell whitespace-nowrap text-right">
                   {getValueDisplay(transaction.value, transaction.type)}
                 </td>
-                <td className="table-cell whitespace-nowrap text-gray-500">
-                  <div className="flex items-center space-x-2 justify-end">
+                <td className="table-cell whitespace-nowrap text-gray-500 text-center">
+                  <div className="flex items-center space-x-2 justify-center">
                     {onEdit && (
                       <button
                         onClick={() => onEdit(transaction.id, transaction)}

@@ -1,0 +1,256 @@
+.background-modal {
+  padding: 24px;
+  max-width: 500px;
+}
+
+.background-modal .tab-buttons {
+  display: flex;
+  margin-bottom: 24px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.background-modal .tab-button {
+  flex: 1;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #6b7280;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.background-modal .tab-button:hover {
+  color: #3b82f6;
+}
+
+.background-modal .tab-button.active {
+  color: #1f2937;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.background-modal .modal-content {
+  padding: 16px;
+  min-height: 250px;
+  margin-bottom: 24px;
+}
+
+/* Área de upload de imagem */
+.background-modal .upload-area {
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  background-color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.background-modal .upload-area:hover {
+  border-color: #3b82f6;
+}
+
+.background-modal .upload-icon {
+  margin-bottom: 20px;
+  color: #6b7280;
+}
+
+.background-modal .upload-text {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.background-modal .upload-subtext {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Preview da imagem */
+.background-modal .image-preview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  max-height: 300px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
+}
+
+.background-modal .image-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.background-modal .remove-preview {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.background-modal .remove-preview:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Seletor de cores */
+.background-modal .color-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 0;
+}
+
+.background-modal .color-preview-box {
+  height: 140px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.background-modal .color-input-container {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.background-modal .color-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.background-modal .color-text-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 16px;
+  color: #374151;
+}
+
+.background-modal .color-picker-button {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.background-modal .color-picker-button:hover {
+  background-color: #f3f4f6;
+  color: #3b82f6;
+}
+
+.background-modal .color-picker-popover {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 8px);
+  left: 0;
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ajustando o tamanho do componente react-colorful para expandir apenas horizontalmente */
+.color-picker-popover .react-colorful {
+  width: 100% !important;
+  height: 200px !important; /* Altura fixa */
+}
+
+.background-modal .color-palette {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.background-modal .color-option {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.background-modal .color-option:hover {
+  transform: scale(1.05);
+}
+
+.background-modal .color-option.selected {
+  border-color: #1f2937;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #3b82f6;
+}
+
+/* Botões de ação */
+.background-modal .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 24px;
+}
+
+.background-modal .button {
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.background-modal .button-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.background-modal .button-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+.background-modal .button-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.background-modal .button-primary:hover {
+  background-color: #2563eb;
+}

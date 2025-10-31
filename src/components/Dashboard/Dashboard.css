@@ -1,411 +1,88 @@
-/* Dashboard Component Styles */
-
 .dashboard-container {
   background-color: #D9E4EC;
   min-height: 100vh;
   padding: 2rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
 .dashboard-header {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
-  max-width: 1500px;
-  margin: 0 auto 2rem auto;
-  padding: 0 1rem;
-}
-
-
-@media (min-width: 768px) {
-  .dashboard-header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between; 
-  }
-}
-
-.dashboard-header h1 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--gray-800);
-  margin: 0;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
 .logout-button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  border: none;
-  font-size: 20px;
-  background-color: #fff;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  transition: color 0.2s ease-in-out;
+  transition: all 0.3s ease;
 }
 
 .logout-button:hover {
-  color: #c03131;
+  background-color: #e74c3c;
+  color: white;
 }
 
 .dashboard-content {
-  max-width: 1500px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .financial-cards {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
-  grid-template-columns: 1fr;
-  margin-bottom: 2rem;
-}
-
-@media (min-width: 768px) {
-  .financial-cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.financial-card {
-  background-color: white;
-  border-radius: 1rem;
-  padding: 1.25rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease-in-out;
-  font-size: 18px;
-}
-
-.financial-card:hover {
-  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-}
-
-.financial-card-entradas {
-  background: white;
-}
-
-.financial-card-saidas {
-  background: white;
-}
-
-.financial-card-total {
-  background: white;
 }
 
 .transactions-section {
   background-color: white;
-  border-radius: 1rem;
+  border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .transactions-header {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .transactions-header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .transactions-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--gray-800);
   margin: 0;
+  font-size: 1.5rem;
+  color: #333;
 }
 
-.btn-add {
-  display: flex;
-  padding: 10px;
-  gap: 5px;
-  color: #fff;
-  font-size: 20px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  border: none;
-  background-color: #1d4ed8;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.btn-add:hover {
-  background-color: #5678d4;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Overlay para adicionar transação */
-.overlay {
+.background-change-button {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  bottom: 20px;
+  right: 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 1rem;
-}
-
-.overlay-content {
-  background-color: white;
-  border-radius: 1rem;
-  padding: 2rem;
-  max-width: 480px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.overlay-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-}
-
-.overlay-header h3 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin: 0;
-}
-
-.overlay-header p {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0.25rem 0 0 0;
-  font-weight: 400;
-}
-
-.close-button {
-  background: none;
-  border: none;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 16px;
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s ease-in-out;
-  color: #6b7280;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
-.close-button:hover {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-
-.transaction-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  font-weight: 500;
-  color: #374151;
-  font-size: 0.875rem;
-  margin-bottom: 0;
-}
-
-.input-transaction {
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  transition: all 0.2s ease-in-out;
-  background-color: white;
-  margin: 0;
-}
-
-.input-transaction:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.input-transaction::placeholder {
-  color: #9ca3af;
-  font-size: 0.875rem;
-}
-
-.form-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-}
-
-.btn-primary {
-  background-color: #3b82f6;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  font-size: 0.875rem;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-primary:hover {
-  background-color: #2563eb;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.btn-secondary {
-  background-color: white;
-  color: #374151;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  font-size: 0.875rem;
-  transition: all 0.2s ease-in-out;
-  border: 1px solid #d1d5db;
-  cursor: pointer;
-}
-
-.btn-secondary:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-}
-
-/* Table Styles */
-.table-modern {
-  width: 100%;
-  background-color: white;
-  border-radius: 0;
-  box-shadow: none;
-  border: none;
-  overflow: hidden;
-}
-
-.table-header {
-  background-color: white;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.table-row {
-  border-bottom: 1px solid #e5e7eb;
-  transition: background-color 0.15s ease-in-out;
-}
-
-.table-row:hover {
-  background-color: #f9fafb;
-}
-
-.table-cell {
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-}
-
-.table-responsive {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.btn-edit {
-  border: none;
-  background-color: #fff !important;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.btn-edit:hover {
-  background-color: var(--gray-100);
-}
-
-.tag-entrada {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.125rem 0.625rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  background-color: #dcfce7;
-  color: #008000;
-}
-
-.tag-gasto {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.125rem 0.625rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  background-color: #fee2e2;
-  color: #FF0000;
-}
-
-/* Responsividade do Dashboard */
-@media (max-width: 767px) {
-  .dashboard-container {
-    padding: 1rem;
-  }
-
-  .table-cell {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.8rem;
-  }
-  
-  .table-modern {
-    font-size: 0.875rem;
-  }
-  
-  .btn-primary, .btn-secondary {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
-  
-  .financial-card {
-    padding: 1rem;
-  }
-
-  .overlay-content {
-    padding: 1.5rem;
-    margin: 1rem;
-  }
-
-  .form-actions {
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 480px) {
-  .dashboard-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .transactions-header h2 {
-    font-size: 1.25rem;
-  }
-
-  .overlay-content {
-    padding: 1rem;
-  }
+.background-change-button:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
