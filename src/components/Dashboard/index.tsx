@@ -124,19 +124,7 @@ const Dashboard: React.FC = () => {
     }
   };
   
-  // Manter estas funções para compatibilidade com código existente
-  const handleBackgroundImageSelect = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const imageDataUrl = e.target?.result as string;
-      handleBackgroundChange('image', imageDataUrl);
-    };
-    reader.readAsDataURL(file);
-  };
-  
-  const handleBackgroundImageRemove = () => {
-    handleBackgroundChange('color', '#D9E4EC');
-  };
+  // Funções removidas para resolver erros de build
 
   if (isLoading) {
     return <div>Carregando...</div>;
