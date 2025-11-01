@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import { AuthCredentials, RegisterData, User, AuthResponse } from '../types';
+import { AuthCredentials, RegisterData, User, AuthResponse, DashboardBackground, DashboardBackgroundType } from '../types';
 
 export const userService = {
   // Registrar um novo usuário
@@ -147,6 +147,107 @@ async register(data: RegisterData): Promise<AuthResponse> {
     } catch (error) {
       console.error('Erro ao obter usuário atual:', error);
       return null;
+    }
+  },
+
+  // Obter configuração de fundo do dashboard do usuário
+  async getUserBackground(): Promise<{ data: DashboardBackground | null, error: Error | null }> {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      
+      if (!sessionData.session) {
+        return { data: null, error: new Error('Usuário não autenticado') };
+      }
+
+      const { data: userData, error } = await supabase
+        .from('users')
+        .select('dashboard_background_type, dashboard_background_value')
+        .eq('id', sessionData.session.user.id)
+        .single();
+
+      if (error) {
+        return { data: null, error };
+      }
+
+      // Se não houver dados, retornar valores padrão
+      if (!userData.dashboard_background_type || !userData.dashboard_background_value) {
+        return { 
+          data: { 
+            type: 'color', 
+            value: '#D9E4EC' 
+          }, 
+          error: null 
+        };
+      }
+
+      return { 
+        data: {
+          type: userData.dashboard_background_type as DashboardBackgroundType,
+          value: userData.dashboard_background_value
+        }, 
+        error: null 
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: error instanceof Error ? error : new Error('Erro ao obter fundo do dashboard')
+      };
+    }
+  },
+
+  // Atualizar configuração de fundo do dashboard do usuário
+  async updateUserBackground(background: DashboardBackground): Promise<{ data: DashboardBackground | null, error: Error | null }> {
+    try {
+      // Validações
+      if (background.type !== 'color' && background.type !== 'image') {
+        return { data: null, error: new Error('Tipo de fundo inválido. Deve ser "color" ou "image"') };
+      }
+
+      if (background.type === 'color') {
+        // Validar formato de cor hex
+        const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+        if (!hexColorRegex.test(background.value)) {
+          return { data: null, error: new Error('Formato de cor inválido. Deve ser um valor hexadecimal (ex: #D9E4EC)') };
+        }
+      } else if (background.type === 'image') {
+        // Validar URL ou data:image
+        if (!background.value.startsWith('http') && !background.value.startsWith('data:image/')) {
+          return { data: null, error: new Error('Formato de imagem inválido. Deve ser uma URL ou data:image') };
+        }
+      }
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      
+      if (!sessionData.session) {
+        return { data: null, error: new Error('Usuário não autenticado') };
+      }
+
+      const { data, error } = await supabase
+        .from('users')
+        .update({
+          dashboard_background_type: background.type,
+          dashboard_background_value: background.value
+        })
+        .eq('id', sessionData.session.user.id)
+        .select('dashboard_background_type, dashboard_background_value')
+        .single();
+
+      if (error) {
+        return { data: null, error };
+      }
+
+      return { 
+        data: {
+          type: data.dashboard_background_type as DashboardBackgroundType,
+          value: data.dashboard_background_value
+        }, 
+        error: null 
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: error instanceof Error ? error : new Error('Erro ao atualizar fundo do dashboard')
+      };
     }
   }
 };

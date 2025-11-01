@@ -6,3 +6,4 @@ export { useToggle } from './useToggle';
 export { usePrevious } from './usePrevious';
 export { useFinances } from './useFinances';
 export { useTransactions } from './useTransactions';
+export { useBackground } from './useBackground';

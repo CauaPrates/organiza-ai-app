@@ -51,3 +51,11 @@ export interface AuthResponse {
   session: any;
   error: Error | null;
 }
+
+// Tipos para fundo do dashboard
+export type DashboardBackgroundType = 'color' | 'image';
+
+export interface DashboardBackground {
+  type: DashboardBackgroundType;
+  value: string;
+}

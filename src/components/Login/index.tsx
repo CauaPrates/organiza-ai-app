@@ -47,7 +47,7 @@ function Login() {
   return (
     <div className="login-container">
       <img
-        src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGN5Z2JqYTVuNGx5b2FxcHk0dWg1ZGJ5cW02b3psM2Q2cWlpcXE1NCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26hirJIfLazHxrInC/giphy.gif"
+        src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3pwZnFiamNndzMzdjRqZDU4bWZwbmUxcWc1MzRtNmUzdzh0czV0diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8Z5KQIxj7W0t8zzYyR/giphy.gif"
         alt="Background Login"
         className="login-background"
       />
